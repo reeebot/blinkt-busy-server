@@ -1,4 +1,4 @@
-# Simple server for Raspberry Pi with Pimoroni Unicorn hat
+# Simple server for Raspberry Pi with Pimoroni Blinkt! hat
 
 ...
 
