@@ -61,8 +61,8 @@ def apiAvailable() :
 @app.route('/api/away', methods=['GET'])
 def apiAway() :
 	switchOff()
-	switchOff()
 	blinkt.set_all(140, 160, 0)
+	blinkt.show()
 	return (jsonify())
 
 @app.errorhandler(404)
