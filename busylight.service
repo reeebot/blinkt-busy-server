@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=pi
-WorkingDirectory=/home/pi/unicorn-busy-server
+WorkingDirectory=/home/pi/blinkt-busy-server
 ExecStart=python3 server.py
 Restart=always
 Environment=FLASK_CONFIG=production
