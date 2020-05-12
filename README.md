@@ -1,5 +1,6 @@
 # API for Pimoroni Blinkt! hat
-
+http://docs.pimoroni.com/blinkt/
+https://shop.pimoroni.com/products/blinkt
 
 ## Install
 
