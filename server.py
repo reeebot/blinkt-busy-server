@@ -47,7 +47,7 @@ def apiOff() :
 @app.route('/api/busy', methods=['GET'])
 def apiBusy() :
 	switchOff()
-   	blinkt.set_all(255, 0, 0)
+	blinkt.set_all(255, 0, 0)
 	blinkt.show()
 	return (jsonify())
 
