@@ -2,7 +2,6 @@
 
 import json
 import blinkt
-import threading
 from time import sleep
 from datetime import datetime
 from gpiozero import CPUTemperature
@@ -10,27 +9,26 @@ from gpiozero import CPUTemperature
 from flask import Flask, jsonify, make_response, request
 from random import randint
 
-blinkThread = None
-
 #setup the blinkt! hat
+blinkt.set_clear_on_exit(False)
 blinkt.set_brightness(0.2)
 blinkt.show()
 
 
 app = Flask(__name__)
 
+def setColor(r, g, b) :
+	blinkt.set_all(r, g, b)
+	blinkt.show()
 
 def switchOn() :
-	red = randint(10, 255)
-	green = randint(10, 255)
-	blue = randint(10, 255)
-	blinkThread = threading.Thread(target=setColor, args=(red, green, blue))
-	blinkThread.do_run = True
-	blinkThread.start()
+	r = randint(10, 255)
+	g = randint(10, 255)
+	b = randint(10, 255)
+	blinkt.set_all(r, g, b)
+	blinkt.show()
 
 def switchOff() :
-	if blinkThread != None :
-		blinkThread.do_run = False
 	blinkt.clear()
 	blinkt.show()
 
@@ -49,25 +47,22 @@ def apiOff() :
 @app.route('/api/busy', methods=['GET'])
 def apiBusy() :
 	switchOff()
-	blinkThread = threading.Thread(target=setColor, args=(255, 0, 0))
-	blinkThread.do_run = True
-	blinkThread.start()
+   	blinkt.set_all(255, 0, 0)
+	blinkt.show()
 	return (jsonify())
 
 @app.route('/api/available', methods=['GET'])
-def apiBusy() :
+def apiAvailable() :
 	switchOff()
-	blinkThread = threading.Thread(target=setColor, args=(0, 255, 0))
-	blinkThread.do_run = True
-	blinkThread.start()
+	blinkt.set_all(0, 255, 0)
+	blinkt.show()
 	return (jsonify())
 
 @app.route('/api/away', methods=['GET'])
-def apiBusy() :
+def apiAway() :
 	switchOff()
-	blinkThread = threading.Thread(target=setColor, args=(150, 150, 0))
-	blinkThread.do_run = True
-	blinkThread.start()
+	switchOff()
+	blinkt.set_all(140, 160, 0)
 	return (jsonify())
 
 @app.errorhandler(404)
