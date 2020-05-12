@@ -1,6 +1,5 @@
-# Simple server for Raspberry Pi with Pimoroni Blinkt! hat
+# API for Pimoroni Blinkt! hat
 
-...
 
 ## Install
 
