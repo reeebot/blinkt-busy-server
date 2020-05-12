@@ -17,6 +17,7 @@ blinkt.show()
 
 app = Flask(__name__)
 
+
 def setColor(r, g, b) :
 	blinkt.set_all(r, g, b)
 	blinkt.show()
@@ -32,38 +33,43 @@ def switchOff() :
 	blinkt.clear()
 	blinkt.show()
 
+
 # API Initialization
+@app.route('/')
+def root():
+    return app.send_static_file('index.html')
+
 @app.route('/api/on', methods=['GET'])
 def apiOn() :
 	switchOff()
 	switchOn()
-	return jsonify({})
+	return redirect('/')
 
 @app.route('/api/off', methods=['GET'])
 def apiOff() :
 	switchOff()
-	return jsonify({})
+	return app.send_static_file('index.html')
 
 @app.route('/api/busy', methods=['GET'])
 def apiBusy() :
 	switchOff()
 	blinkt.set_all(255, 0, 0)
 	blinkt.show()
-	return (jsonify())
+	return app.send_static_file('index.html')
 
 @app.route('/api/available', methods=['GET'])
 def apiAvailable() :
 	switchOff()
 	blinkt.set_all(0, 255, 0)
 	blinkt.show()
-	return (jsonify())
+	return app.send_static_file('index.html')
 
 @app.route('/api/away', methods=['GET'])
 def apiAway() :
 	switchOff()
 	blinkt.set_all(140, 160, 0)
 	blinkt.show()
-	return (jsonify())
+	return app.send_static_file('index.html')
 
 @app.errorhandler(404)
 def not_found(error):
