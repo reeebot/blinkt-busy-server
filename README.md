@@ -1,9 +1,10 @@
-# API for Pimoroni Blinkt! hat
+# Web App & API for Pimoroni Blinkt! hat
 http://docs.pimoroni.com/blinkt/
 <br>
 https://shop.pimoroni.com/products/blinkt
 
 <br>
+<img src="https://i.imgur.com/4mNwUn5.png">
 
 ## Install
 ...
