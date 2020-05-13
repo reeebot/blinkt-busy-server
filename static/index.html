@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,12 +18,16 @@
 					<p></p>
 					<h2 class="font-weight-light">myStatus</h2>
 					<p></p>
-					<form action="/api/busy" method="POST"><button class="btn btn-danger"><b>BUSY</b></button></form>
-					<form action="/api/available" method="POST"><button class="btn btn-success"><b>AVAILABLE</b></button></form>
-					<form action="/api/away" method="POST"><button class="btn btn-warning"><b>AWAY</b></button></form>
+					<form action="/api/busy" method="POST">
+					    <button class="btn btn-danger"><b>BUSY</b></button>
+					    <button class="btn btn-success" formaction="/api/available"><b>AVAILABLE</b></button>
+					    <button class="btn btn-warning" formaction="/api/away"><b>AWAY</b></button>
+				    </form>
 					<p></p>
-					<form action="/api/on" method="POST"><button class="btn btn-outline-success">on</button></form>
-					<form action="/api/off" method="POST"><button class="btn btn-outline-danger">off</button></form>
+					<form action="/api/on" method="POST">
+					    <button class="btn btn-outline-success">on</button>
+					    <button class="btn btn-outline-danger" formaction="/api/off">off</button>
+				    </form>
 				</div>
 			</div>
 		</div>
