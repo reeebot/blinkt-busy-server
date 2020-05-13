@@ -6,7 +6,7 @@ from time import sleep
 from datetime import datetime
 from gpiozero import CPUTemperature
 
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, request, redirect
 from random import randint
 
 #setup the blinkt! hat
@@ -39,37 +39,37 @@ def switchOff() :
 def root():
     return app.send_static_file('index.html')
 
-@app.route('/api/on', methods=['GET'])
+@app.route('/api/on', methods=['POST'])
 def apiOn() :
 	switchOff()
 	switchOn()
 	return redirect('/')
 
-@app.route('/api/off', methods=['GET'])
+@app.route('/api/off', methods=['POST'])
 def apiOff() :
 	switchOff()
-	return app.send_static_file('index.html')
+	return redirect('/')
 
-@app.route('/api/busy', methods=['GET'])
+@app.route('/api/busy', methods=['POST'])
 def apiBusy() :
 	switchOff()
 	blinkt.set_all(255, 0, 0)
 	blinkt.show()
-	return app.send_static_file('index.html')
+	return redirect('/')
 
-@app.route('/api/available', methods=['GET'])
+@app.route('/api/available', methods=['POST'])
 def apiAvailable() :
 	switchOff()
 	blinkt.set_all(0, 255, 0)
 	blinkt.show()
-	return app.send_static_file('index.html')
+	return redirect('/')
 
-@app.route('/api/away', methods=['GET'])
+@app.route('/api/away', methods=['POST'])
 def apiAway() :
 	switchOff()
 	blinkt.set_all(140, 160, 0)
 	blinkt.show()
-	return app.send_static_file('index.html')
+	return redirect('/')
 
 @app.errorhandler(404)
 def not_found(error):
