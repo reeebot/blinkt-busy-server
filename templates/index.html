@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+			<title>myStatus</title>
+	</head>
+
+	<body>
+		<div class="container py-2" align="center">
+			<div class="row">
+				<div class="col">
+					<p></p>
+					<h2 class="font-weight-light">myStatus
+						{% if off %}
+						<span class="badge badge-dark"> </span>
+						{% endif %}
+						{% if busy %}
+						<span class="badge badge-danger"> </span>
+						{% endif %}
+						{% if available %}
+						<span class="badge badge-success"> </span>
+						{% endif %}
+						{% if away %}
+						<span class="badge badge-info"> </span>
+						{% endif %}
+					</h2>
+					<p></p>
+					<form action="/busy" method="POST">
+					    <button class="btn btn-danger"><b>BUSY</b></button>
+					    <button class="btn btn-success" formaction="/available"><b>AVAILABLE</b></button>
+					    <button class="btn btn-info" formaction="/away"><b>AWAY</b></button>
+				    </form>
+					<p></p>
+					<form action="/off" method="POST">
+					    <button class="btn btn-outline-dark">off</button>
+				    </form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
