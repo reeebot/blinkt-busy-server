@@ -6,7 +6,7 @@ from time import sleep
 from datetime import datetime
 from gpiozero import CPUTemperature
 
-from flask import Flask, jsonify, make_response, request, redirect
+from flask import Flask, jsonify, make_response, request, redirect, url_for
 from random import randint
 
 #setup the blinkt! hat
@@ -35,6 +35,10 @@ def switchOff() :
 
 
 # API Initialization
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
 @app.route('/')
 def root():
     return app.send_static_file('index.html')
@@ -67,7 +71,7 @@ def apiAvailable() :
 @app.route('/api/away', methods=['POST'])
 def apiAway() :
 	switchOff()
-	blinkt.set_all(140, 160, 0)
+	blinkt.set_all(160, 140, 0)
 	blinkt.show()
 	return redirect('/')
 
