@@ -248,7 +248,7 @@ def notification_received():
         print("- - - - - - - - - - - - - - - - - -")
         timeLeftSubscription = (datetime.fromisoformat(subscriptionExp[0:26]) - datetime.now()) - timedelta(hours=2)
         print("Expires in: " + str(timeLeftSubscription))
-        print("Status: " + updatedStatus)
+        print("> > " + updatedStatus.upper() + " < <")
         print("- - - - - - - - - - - - - - - - - -")
         return Response(status=202, mimetype=None)
 
@@ -262,24 +262,18 @@ def update_notification():
     payload = {
         "expirationDateTime": newExpireTime
         }
-    if not graph_data.get('value'):
-        print("")
-        print("> > >")
-        print("No Subscription to Update")
-        return Response(status=202)
-    else:
-        sub_ID_ENDPOINT = app_config.SUBSCRIPTIONS_ENDPOINT + graph_data['value'][0]['id']
-        update_request = requests.patch(
-            sub_ID_ENDPOINT,
-            headers={
-                'Authorization': 'Bearer ' + token_save,
-                'Content-Type': 'application/json'},
-            json=payload,
-            ).json()
-        print("")
-        print("> > >")
-        print("Subscription Updated")
-        return Response(status=202)
+    sub_ID_ENDPOINT = app_config.SUBSCRIPTIONS_ENDPOINT + graph_data['value'][0]['id']
+    update_request = requests.patch(
+        sub_ID_ENDPOINT,
+        headers={
+            'Authorization': 'Bearer ' + token_save,
+            'Content-Type': 'application/json'},
+        json=payload,
+        ).json()
+    print("")
+    print("> > >")
+    print("Subscription Updated")
+    return Response(status=202)
 
 
 ####################################
@@ -290,17 +284,14 @@ def update_notification():
 def Busy():
     blinkt.set_all(255, 0, 0)
     blinkt.show()
-    print("blinkt-busy")
 
 def Available():
     blinkt.set_all(0, 255, 0)
     blinkt.show()
-    print("blinkt-avail")
 
 def Away():
     blinkt.set_all(0, 0, 255)
     blinkt.show()
-    print("blinkt-away")
 
 @app.route('/off')
 def apiOff() :
