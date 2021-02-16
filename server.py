@@ -71,10 +71,8 @@ def index():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    # global token_save
-    # token_save = token['access_token']
-    with open("token_save.txt", "w") as token_text:                     #################
-        token_text.write(token['access_token'])                         #################
+    with open("token_save.txt", "w") as token_text:
+        token_text.write(token['access_token'])
     return render_template('index.html', user=session["user"])
 
 @app.route("/login")
@@ -148,10 +146,8 @@ def get_subscriptions():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    # global token_save
-    # token_save = token['access_token']
-    with open("token_save.txt", "w") as token_text:                     #################
-        token_text.write(token['access_token'])                         #################
+    with open("token_save.txt", "w") as token_text:
+        token_text.write(token['access_token'])
     graph_data = requests.get(
         app_config.SUBSCRIPTIONS_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token['access_token']}
@@ -168,14 +164,14 @@ def get_subscriptions():
 
 @app.route("/create")
 def create_subscription():
+    if not scheduler.running:
+        scheduler.start()
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    # global token_save
-    # token_save = token['access_token']
-    with open("token_save.txt", "w") as token_text:                     #################
-        token_text.write(token['access_token'])                         #################
-    expireTime = (datetime.utcnow() + timedelta(hours=2)).isoformat() + "Z"
+    with open("token_save.txt", "w") as token_text:
+        token_text.write(token['access_token'])
+    expireTime = (datetime.utcnow() + timedelta(hours=2)).isoformat() + "2Z"
     payload = {
         "changeType": "updated",
         "notificationUrl": http_tunnel.public_url + '/notify',
@@ -190,11 +186,14 @@ def create_subscription():
             'Content-Type': 'application/json'},
         json=payload,
         ).json()
+    global sub_ID
+    sub_ID = graph_data.get('id')
+    print(sub_ID)
     if not graph_data.get('error'):
         print("")
         print("> > >")
         print("Subscription Successful | Expires: " + graph_data.get('expirationDateTime'))
-        scheduler.add_job('update_job', update_notification, trigger='interval', minutes=15, misfire_grace_time=30, coalesce=True)
+        scheduler.add_job('update_job', make_update_req, trigger='interval', minutes=15, misfire_grace_time=30, coalesce=True)
     else:
         print("")
         print("> > >")
@@ -204,8 +203,8 @@ def create_subscription():
 
 @app.route("/remove")
 def remove_subscription():
-    with open("token_save.txt", "r") as token_text:                     #################
-        token_save = token_text.read()                                  #################
+    with open("token_save.txt", "r") as token_text:
+        token_save = token_text.read()
     graph_data = requests.get(
         app_config.SUBSCRIPTIONS_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token_save}
@@ -220,7 +219,9 @@ def remove_subscription():
             removeID,
             headers={'Authorization': 'Bearer ' + token_save}
             )
-        print(remove_request)
+        if scheduler.running:
+            scheduler.shutdown(wait=False)
+        switchOff()
         print("")
         print("> > >")
         print("Subscription Removed")
@@ -254,36 +255,46 @@ def notification_received():
         print("")
         print("> > >")
         print("- - - - - - - - - - - - - - - - - -")
+        print(graph_data)
         timeLeftSubscription = (datetime.fromisoformat(subscriptionExp[0:26]) - datetime.now()) - timedelta(hours=2)
+        print(subscriptionExp)
         print("Expires in: " + str(timeLeftSubscription))
         print("> > " + updatedStatus.upper() + " < <")
         print("- - - - - - - - - - - - - - - - - -")
-        return Response(status=202, mimetype=None)
+        return Response(status=202)#, mimetype=None
 
-@app.route("/update", methods=['POST', 'GET'])
+@app.route("/update")
 def update_notification():
-    with open("token_save.txt", "r") as token_text:                     #################
-        token_save = token_text.read()                                  #################
-    graph_data = requests.get(
-        app_config.SUBSCRIPTIONS_ENDPOINT,
-        headers={'Authorization': 'Bearer ' + token_save}
-        ).json()
-    newExpireTime = (datetime.utcnow() + timedelta(hours=2)).isoformat() + "Z"
-    payload = {
+    with open("token_save.txt", "r") as token_text:
+        token_save = token_text.read()
+    newExpireTime = (datetime.utcnow() + timedelta(hours=2)).isoformat() + "2Z"
+    update_payload = {
         "expirationDateTime": newExpireTime
         }
-    sub_ID_ENDPOINT = app_config.SUBSCRIPTIONS_ENDPOINT + graph_data['value'][0]['id']
+    sub_ID_ENDPOINT = app_config.SUBSCRIPTIONS_ENDPOINT + sub_ID
     update_request = requests.patch(
         sub_ID_ENDPOINT,
         headers={
             'Authorization': 'Bearer ' + token_save,
             'Content-Type': 'application/json'},
-        json=payload,
-        ).json()
+        json=update_payload,
+        )#.json()
+    print("- - - - - - - - - - - - - - - - -")
+    print(update_payload)
+    print(update_request)
+    print(update_request.json)
+    print(update_request.text)
+    print(update_request.content)
     print("")
     print("> > >")
     print("Subscription Updated")
+    print("------------")
     return Response(status=202)
+
+
+def make_update_req():
+    requests.get('https://localhost:5000/update', verify=False)
+    return
 
 
 ####################################
@@ -306,7 +317,8 @@ def Away():
 @app.route('/off')
 def apiOff() :
     switchOff()
-    scheduler.shutdown(wait=False)
+    if scheduler.running:
+        scheduler.shutdown(wait=False)
     remove_subscription()
     return Response(status=202)
 
@@ -329,7 +341,11 @@ def apiAway() :
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-atexit.register(lambda: scheduler.shutdown(wait=False))
+def exitScheduler():
+    if scheduler.running:
+        scheduler.shutdown(wait=False)
+
+atexit.register(lambda: exitScheduler())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', ssl_context='adhoc')
