@@ -71,8 +71,10 @@ def index():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    global token_save
-    token_save = token['access_token']
+    # global token_save
+    # token_save = token['access_token']
+    with open("token_save.txt", "w") as token_text:                     #################
+        token_text.write(token['access_token'])                         #################
     return render_template('index.html', user=session["user"])
 
 @app.route("/login")
@@ -146,8 +148,10 @@ def get_subscriptions():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    global token_save
-    token_save = token['access_token']
+    # global token_save
+    # token_save = token['access_token']
+    with open("token_save.txt", "w") as token_text:                     #################
+        token_text.write(token['access_token'])                         #################
     graph_data = requests.get(
         app_config.SUBSCRIPTIONS_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token['access_token']}
@@ -167,8 +171,10 @@ def create_subscription():
     token = _get_token_from_cache(app_config.SCOPE)
     if not token:
         return redirect(url_for("login"))
-    global token_save
-    token_save = token['access_token']
+    # global token_save
+    # token_save = token['access_token']
+    with open("token_save.txt", "w") as token_text:                     #################
+        token_text.write(token['access_token'])                         #################
     expireTime = (datetime.utcnow() + timedelta(hours=2)).isoformat() + "Z"
     payload = {
         "changeType": "updated",
@@ -198,6 +204,8 @@ def create_subscription():
 
 @app.route("/remove")
 def remove_subscription():
+    with open("token_save.txt", "r") as token_text:                     #################
+        token_save = token_text.read()                                  #################
     graph_data = requests.get(
         app_config.SUBSCRIPTIONS_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token_save}
@@ -254,6 +262,8 @@ def notification_received():
 
 @app.route("/update", methods=['POST', 'GET'])
 def update_notification():
+    with open("token_save.txt", "r") as token_text:                     #################
+        token_save = token_text.read()                                  #################
     graph_data = requests.get(
         app_config.SUBSCRIPTIONS_ENDPOINT,
         headers={'Authorization': 'Bearer ' + token_save}
