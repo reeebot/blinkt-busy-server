@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>myStatus</title>
+</head>
+<body>
+    <h2>Login Failure</h2>
+    <dl>
+      <dt>{{ result.get("error") }}</dt>
+      <dd>{{ result.get("error_description") }}</dd>
+    </dl>
+    <hr>
+    <a href="{{ url_for('index') }}">Homepage</a>
+</body>
+</html>
