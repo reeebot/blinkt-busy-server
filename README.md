@@ -1,11 +1,8 @@
 # Web App & API for Pimoroni Blinkt! hat
-http://docs.pimoroni.com/blinkt/
 <br>
-https://shop.pimoroni.com/products/blinkt
-<br><br>
-forked from: https://github.com/estruyf/unicorn-busy-server
+NEW VERSION:  <a href="https://github.com/reeebot/myStatus">myStatus</a>
 
-
+<br>
 <br>
 <img src="https://i.imgur.com/4mNwUn5.png">
 
